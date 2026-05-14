@@ -1,0 +1,20 @@
+{
+  "agent": {
+    "name": "AGENTE PHYSIS",
+    "welcome": "\"El ruido de la tarde es inevitable, pero tu reacción es opcional. Respira.\""
+  },
+  "dashboard": {
+    "center": "Tu Centro",
+    "homeostasis": "Nivel de Homeostasis",
+    "protocol": "Protocolo",
+    "protocol_desc": "3 pasos hoy",
+    "rhythm": "Ritmo",
+    "rhythm_desc": "Sincronizado"
+  },
+  "nav": {
+    "garden": "Jardín Zen",
+    "mirror": "El Espejo",
+    "protocol": "Protocolo",
+    "profile": "Perfil"
+  }
+}

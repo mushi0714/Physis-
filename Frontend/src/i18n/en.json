@@ -1,0 +1,20 @@
+{
+  "agent": {
+    "name": "PHYSIS AGENT",
+    "welcome": "\"The noise of the afternoon is inevitable, but your reaction is optional. Breathe.\""
+  },
+  "dashboard": {
+    "center": "Your Center",
+    "homeostasis": "Homeostasis Level",
+    "protocol": "Protocol",
+    "protocol_desc": "3 steps today",
+    "rhythm": "Rhythm",
+    "rhythm_desc": "Synchronized"
+  },
+  "nav": {
+    "garden": "Zen Garden",
+    "mirror": "The Mirror",
+    "protocol": "Protocol",
+    "profile": "Profile"
+  }
+}
