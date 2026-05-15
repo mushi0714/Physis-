@@ -2,6 +2,38 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  @apply bg-physis-avena text-physis-avellana antialiased;
+@layer base {
+  body {
+    @apply bg-physis-avena text-physis-avellana antialiased;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+  }
+}
+
+/* Animación de rebote sutil para la campana */
+@keyframes physis-bounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-10px); }
+  60% { transform: translateY(-5px); }
+}
+
+.animate-bell-bounce {
+  animation: physis-bounce 2s ease infinite;
+}
+
+/* Tooltip elegante */
+.tooltip-pulse {
+  position: relative;
+}
+
+.tooltip-pulse::after {
+  content: '';
+  position: absolute;
+  right: -5px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent transparent #2D2D2D;
 }
