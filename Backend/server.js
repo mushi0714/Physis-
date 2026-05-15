@@ -3,61 +3,67 @@ const express = require('express');
 const cors = require('cors');
 const sequelize = require('./src/config/database');
 
-// Models
+// Importar Modelos
 const User = require('./src/models/User');
-const Niche = require('./src/models/Niche');
 const Plan = require('./src/models/Plan');
 const Milestone = require('./src/models/Milestone');
+const Niche = require('./src/models/Niche');
+const DailyLog = require('./src/models/DailyLog');
+
+// Importar Rutas
+const onboardingRoutes = require('./src/routes/onboardingRoutes');
+const userRoutes = require('./src/routes/userRoutes');
+const { startCronJobs } = require('./src/services/cronService');
 
 const app = express();
+app.use(cors());
+app.use(express.json());
 
-app.use(cors()); 
-app.use(express.json()); 
-
-// Database Relations
+// Definir Relaciones
 User.belongsTo(Niche, { foreignKey: 'niche_id' });
 Niche.hasMany(User, { foreignKey: 'niche_id' });
+
 User.hasMany(Plan, { foreignKey: 'user_id' });
 Plan.belongsTo(User, { foreignKey: 'user_id' });
-Niche.hasMany(Plan, { foreignKey: 'niche_id' });
+
 Plan.belongsTo(Niche, { foreignKey: 'niche_id' });
+Niche.hasMany(Plan, { foreignKey: 'niche_id' });
+
 Plan.hasMany(Milestone, { foreignKey: 'plan_id', as: 'milestones' });
 Milestone.belongsTo(Plan, { foreignKey: 'plan_id' });
 
-// Routes
-const onboardingRoutes = require('./src/routes/onboardingRoutes');
+User.hasMany(DailyLog, { foreignKey: 'user_id', as: 'logs' });
+DailyLog.belongsTo(User, { foreignKey: 'user_id' });
+
+// Configurar Rutas
 app.use('/api/onboarding', onboardingRoutes);
+app.use('/api/users', userRoutes);
 
 const PORT = process.env.PORT || 3000;
 
-async function startServer() {
+const startServer = async () => {
   try {
-    console.log('⏳ Starting Physis boot sequence...');
-    await sequelize.authenticate();
+    console.log("⏳ Starting Physis boot sequence...");
     await sequelize.sync({ alter: true }); 
-    console.log('✅ Database synchronized.');
+    console.log("✅ Database synchronized.");
 
-    // SEED NICHES: Ensures AI can assign valid IDs
-    const initialNiches = [
-      { id: 1, name: 'Prosper', description: 'Growth and productivity' },
-      { id: 2, name: 'Serenity', description: 'Peace and balance' },
-      { id: 3, name: 'Scholar', description: 'Knowledge and focus' }
-    ];
-
-    for (const n of initialNiches) {
-      await Niche.findOrCreate({ where: { id: n.id }, defaults: n });
+    const niches = ['Prosper', 'Serenity', 'Scholar'];
+    for (const name of niches) {
+      await Niche.findOrCreate({ where: { name } });
     }
-    console.log('✅ Niches verified.');
+    console.log("✅ Niches verified.");
+
+    startCronJobs();
+    console.log("⏰ Cron jobs activated.");
 
     app.listen(PORT, () => {
-      console.log('-------------------------------------------------------');
+      console.log("-------------------------------------------------------");
       console.log(`🚀 PHYSIS BACKEND ONLINE: http://localhost:${PORT}`);
-      console.log('-------------------------------------------------------');
+      console.log("-------------------------------------------------------");
     });
   } catch (error) {
-    console.error('❌ CRITICAL SERVER ERROR:', error.message);
-    process.exit(1); 
+    console.error("❌ Failed to start server:", error);
   }
-}
+};
 
 startServer();
